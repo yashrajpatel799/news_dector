@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fake News Detector</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f7f6; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        textarea, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #2980b9; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; line-height: 1.6; }
+        .fake { background: #ffebee; border-left: 5px solid #ef5350; color: #c62828; }
+        .true { background: #e8f5e9; border-left: 5px solid #66bb6a; color: #2e7d32; }
+        .loading { text-align: center; color: #7f8c8d; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📰 Fake News Detector</h2>
+    
+    <label>News Title:</label>
+    <input type="text" id="title" placeholder="Enter news headline...">
+    
+    <label>News Content:</label>
+    <textarea id="text" rows="5" placeholder="Paste the full article text here..."></textarea>
+    
+    <button onclick="checkNews()">Analyze News Content</button>
+
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+    <label>OR Analyze via URL:</label>
+    <input type="text" id="url" placeholder="https://example.com/news-article">
+    <button onclick="checkURL()" style="background: #2ecc71;">Analyze URL</button>
+
+    <div id="loading" class="loading" style="display:none;">Analyzing... please wait...</div>
+    <div id="result"></div>
+</div>
+
+
+<script>
+    async function checkNews() {
+        const title = document.getElementById('title').value;
+        const text = document.getElementById('text').value;
+        showResult('Analyzing...', 'loading');
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, text })
+            });
+            const data = await response.json();
+            displayData(data);
+        } catch (error) {
+            showResult('Error connecting to server.', 'fake');
+        }
+    }
+
+    async function checkURL() {
+        const url = document.getElementById('url').value;
+        showResult('Extracting and analyzing article...', 'loading');
+
+        try {
+            const response = await fetch('/predict-url', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const data = await response.json();
+            displayData(data);
+        } catch (error) {
+            showResult('Error: Could not extract news from this URL.', 'fake');
+        }
+    }
+
+    function displayData(data) {
+        const resultDiv = document.getElementById('result');
+        const isFake = data.model_prediction === "Fake";
+        
+        resultDiv.className = isFake ? 'fake' : 'true';
+        resultDiv.style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+
+        resultDiv.innerHTML = `
+            <strong>Prediction:</strong> ${data.model_prediction} (${data.confidence}%)<br>
+            <strong>Fact Check:</strong> ${data.fact_check_status}<br>
+            <strong>AI Verdict:</strong> ${data.Ai_verdict}<br>
+            <strong>AI Reason:</strong> ${data.Ai_reason}
+        `;
+    }
+
+    function showResult(msg, type) {
+        const load = document.getElementById('loading');
+        const res = document.getElementById('result');
+        res.style.display = 'none';
+        load.style.display = 'block';
+        load.innerText = msg;
+    }
+</script>
+<div style="height: 100%; width: 100pxpx; display: flex; align-items: centre; text-align: center;">
+  Made with ❤️ by Yash Raj Patel
+</div>
+</body>
+</html>

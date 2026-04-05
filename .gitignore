@@ -1,0 +1,6 @@
+# .gitignore
+.env
+__pycache__/
+logs.xlsx
+# If your models are very large, ignore them and use Git LFS
+# models/
