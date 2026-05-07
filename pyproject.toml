@@ -2,6 +2,7 @@
 name = "fake-news-detector"
 version = "0.1.0"
 description = "A FastAPI app for fake news detection"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi",
     "uvicorn",
@@ -10,7 +11,7 @@ dependencies = [
     "pymongo",
     "python-dotenv",
     "newspaper3k",
-    "nltk",
+    "nltk"
 ]
 
 [tool.uv]
