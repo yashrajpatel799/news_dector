@@ -1,0 +1,17 @@
+[project]
+name = "fake-news-detector"
+version = "0.1.0"
+description = "A FastAPI app for fake news detection"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "scikit-learn",
+    "google-genai",
+    "pymongo",
+    "python-dotenv",
+    "newspaper3k",
+    "nltk"
+]
+
+[tool.uv]
+managed = true
