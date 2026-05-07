@@ -5,12 +5,12 @@ description = "A FastAPI app for fake news detection"
 dependencies = [
     "fastapi",
     "uvicorn",
-    "scikit-learn",
+    "scikit-learn==1.6.1",
     "google-genai",
     "pymongo",
     "python-dotenv",
     "newspaper3k",
-    "nltk"
+    "nltk",
 ]
 
 [tool.uv]
